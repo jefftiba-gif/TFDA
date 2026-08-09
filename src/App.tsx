@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleProvider } from "./context/RoleContext";
 import AppLayout from "./components/AppLayout";
 import Landing from "./pages/Landing";
@@ -61,7 +61,7 @@ const BUILT_PAGES: Record<string, ComponentType> = {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <RoleProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -82,6 +82,6 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </RoleProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
