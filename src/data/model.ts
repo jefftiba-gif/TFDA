@@ -302,3 +302,276 @@ export const MOCK_CASES: CaseItem[] = [
 ];
 
 export const NOTIFICATIONS_COUNT = 4;
+
+// ---- 系統整合（SYSTEM INTEGRATION 面板）----
+export interface IntegrationSystem {
+  key: string;
+  name: string;
+  nameEn: string;
+  desc: string;
+  status: "connected" | "syncing" | "offline";
+  lastSync: string;
+}
+
+export const INTEGRATION_SYSTEMS: IntegrationSystem[] = [
+  {
+    key: "express",
+    name: "TFDA ExPRESS 平台",
+    nameEn: "REST API",
+    desc: "案件基本資料／帳號連攜／文件交換",
+    status: "connected",
+    lastSync: "2 分鐘前",
+  },
+  {
+    key: "cirb",
+    name: "CDE c-IRB 系統",
+    nameEn: "REST API",
+    desc: "案件登錄／佇儲清單／時效管控",
+    status: "connected",
+    lastSync: "剛剛",
+  },
+  {
+    key: "ejirb",
+    name: "醫院 IRB 系統等（eJIRB）",
+    nameEn: "REST API／檔案交換",
+    desc: "審查意見／狀態同步",
+    status: "connected",
+    lastSync: "5 分鐘前",
+  },
+  {
+    key: "cert",
+    name: "電子憑證管理中心",
+    nameEn: "工商憑證／自然人憑證",
+    desc: "簽章驗證與憑證管理",
+    status: "syncing",
+    lastSync: "同步中",
+  },
+  {
+    key: "notify",
+    name: "通知引擎",
+    nameEn: "電子郵件 + 系統內",
+    desc: "補件要求／審查完成／逾期提醒",
+    status: "connected",
+    lastSync: "剛剛",
+  },
+];
+
+export const LEGAL_BASIS = "《人體研究法》《醫療法》《醫事法》TFDA 法規";
+
+// ---- 三層鎖定機制 / RBAC ROLE MATRIX ----
+export interface RbacRow {
+  role: string;
+  scope: string;
+  level: number; // 1 = broadest .. 5 = narrowest, for visual bar
+}
+
+export const RBAC_MATRIX: RbacRow[] = [
+  { role: "系統管理員", scope: "全部權限", level: 1 },
+  { role: "TFDA 屬權限", scope: "全部案件 ＋ 時效監督", level: 2 },
+  { role: "CDE 層權限", scope: "僅案件登錄與主審指派", level: 3 },
+  { role: "主審 IRB", scope: "僅自身案件", level: 4 },
+  { role: "副審 IRB", scope: "僅自身案件", level: 4 },
+  { role: "廠商", scope: "僅限自身案件", level: 4 },
+  { role: "一般民眾", scope: "僅公開資訊", level: 5 },
+];
+
+export const THREE_TIER_LOCK_NOTE =
+  "三層鎖定機制：國家級監管層（TFDA／CDE／系統管理員）→ 主審機構層（8 家主審醫院）→ 副審機構層（各參與醫院），逐層限縮存取範圍；同層級單位間彼此不可存取對方案件資料。";
+
+// ---- 技術架構說明 / SECURITY footer ----
+export interface SecuritySection {
+  key: string;
+  title: string;
+  titleZh: string;
+  items: string[];
+}
+
+export const SECURITY_SECTIONS: SecuritySection[] = [
+  {
+    key: "auth",
+    title: "AUTHENTICATION",
+    titleZh: "身分驗證",
+    items: ["工商憑證（Business Certificate）", "自然人憑證（NI Certificate）", "SSO 單一登入整合", "OAuth 2.0 授權"],
+  },
+  {
+    key: "encryption",
+    title: "DATA ENCRYPTION",
+    titleZh: "資料加密",
+    items: ["TLS／SSL 傳輸層加密", "靜態儲存加密", "個資及機敏文件加密", "金鑰管理"],
+  },
+  {
+    key: "audit",
+    title: "AUDIT LOG",
+    titleZh: "稽核軌跡",
+    items: ["所有登入事件", "所有文件存取記錄", "所有下載記錄（含使用者／時間／目的）", "版本控制", "不可篡改稽核軌跡"],
+  },
+  {
+    key: "access",
+    title: "ACCESS CONTROL",
+    titleZh: "存取控制",
+    items: ["列層級全安控制", "單位層級遮罩", "時間限制存取", "IP 位址限制", "Session 會話管理"],
+  },
+  {
+    key: "privacy",
+    title: "PRIVACY",
+    titleZh: "隱私保護",
+    items: ["個資去識別化", "最小權限原則", "隱私權政策", "刪除權利"],
+  },
+  {
+    key: "compliance",
+    title: "REGULATORY COMPLIANCE",
+    titleZh: "法規合規",
+    items: ["《人體研究法》", "《醫療法》", "《醫事法》TFDA 法規", "CCP 指導原則", "ISO 41981"],
+  },
+];
+
+// ---- 關鍵時程總表 ----
+export interface MilestoneRow {
+  stage: string;
+  owner: string;
+  duration: string;
+  note: string;
+}
+
+export const MILESTONES: MilestoneRow[] = [
+  { stage: "主審 IRB 審查（新案）", owner: "主審IRB", duration: "20 個工作天", note: "可扣除補件時間；自完整送件翌日起算" },
+  { stage: "主審 IRB 審查（變更案）", owner: "主審IRB", duration: "15 個工作天", note: "扣除補件時間" },
+  { stage: "副審 IRB 審查（全部）", owner: "副審IRB", duration: "10 個工作天", note: "包含補件時間，各副審平行獨立審查" },
+  { stage: "輪序指派梯次", owner: "CDE／系統", duration: "每日 4 梯次", note: "10:30／12:30／13:30／17:30" },
+  { stage: "案件受理與行政審查", owner: "TFDA", duration: "即時", note: "案件登錄完成後立即受理" },
+  { stage: "變更案暫止送審", owner: "廠商", duration: "不可選擇", note: "自 104 年 6 月15日起，所有 c-IRB 變更案不可選擇暫止送審" },
+  { stage: "申覆處理", owner: "廠商", duration: "不計入時效", note: "不核准案件廠商可提出申覆，不計入 c-IRB 時效" },
+];
+
+// ---- 衝突解決機制 ----
+export const CONFLICT_RESOLUTION = {
+  banner: "重大爭議協調窗口 — 升級處理（Escalation）",
+  scenarios: [
+    { title: "主審與副審決議不一致", desc: "依「各 IRB 各自對自家醫院負責、無強制仲裁機制」原則，先由廠商居中協調；協調未果則升級至 TFDA 重大爭議協調窗口。" },
+    { title: "副審簡易審查逕為不通過", desc: "簡審不得逕行不通過，須轉一般審查提報委員全會決議；仍有爭議者由 TFDA 協調處理。" },
+    { title: "跨機構審查時效爭議", desc: "涉及輪序指派或多院審查時效認定爭議，由 TFDA 依時效監控紀錄進行認定與升級處理。" },
+  ],
+  steps: [
+    "案件相關方（廠商／主審IRB／副審IRB）提出爭議",
+    "系統標記案件為「爭議處理中」，通知 TFDA 協調窗口",
+    "TFDA 彙整各方意見與審查歷程",
+    "召開協調會議或以書面方式確認處理結果",
+    "結果登錄系統並結署，如需升級則轉呈上級主管機關",
+  ],
+};
+
+// ---- 補件需求單 ----
+export interface RevisionRequest {
+  id: string;
+  caseId: string;
+  target: string;
+  item: string;
+  issuedDate: string;
+  dueDate: string;
+  status: "待回覆" | "已回覆" | "逾期";
+}
+
+export const REVISION_REQUESTS: RevisionRequest[] = [
+  { id: "RR-2026-014", caseId: "IRB-2026-008", target: "高雄醫學大學附設醫院", item: "受試者同意書風險揭露說明修正", issuedDate: "2026-07-28", dueDate: "2026-08-07", status: "逾期" },
+  { id: "RR-2026-013", caseId: "IRB-2026-004", target: "臺北榮民總醫院", item: "計畫書統計方法補充說明", issuedDate: "2026-08-02", dueDate: "2026-08-16", status: "待回覆" },
+  { id: "RR-2026-011", caseId: "IRB-2026-003", target: "中國醫藥大學附設醫院", item: "藥品資料表版本更新", issuedDate: "2026-07-20", dueDate: "2026-07-30", status: "已回覆" },
+];
+
+// ---- 同意書查檢表 ----
+export const CONSENT_CHECKLIST: ChecklistSection[] = [
+  {
+    title: "文件基本資訊",
+    items: [
+      { label: "同意書版本號與版本日期標示於頁尾", checked: true },
+      { label: "計畫書編號、試驗名稱與主審核准版本一致", checked: true },
+    ],
+  },
+  {
+    title: "受試者權益揭露",
+    items: [
+      { label: "試驗目的、方法及預期時程說明清楚", checked: true },
+      { label: "可能風險、不適及副作用完整揭露", checked: false, required: true },
+      { label: "自願參加及隨時退出之權利說明", checked: false, required: true },
+      { label: "補償與賠償機制說明符合本院規定", checked: false, required: true },
+    ],
+  },
+  {
+    title: "本院適用資訊",
+    items: [
+      { label: "本院院名、地址、24小時聯絡窗口正確", checked: true },
+      { label: "主要研究者（PI）及協同研究者姓名正確", checked: false, required: true },
+      { label: "個人資料保護及去識別化說明符合本院政策", checked: false, required: true },
+    ],
+  },
+];
+
+// ---- 審查工作站（Reviewer task queue）----
+export interface ReviewTask {
+  caseId: string;
+  title: string;
+  stage: "行政完整性審查" | "完整文件審查" | "補件判定" | "決議";
+  dueDate: string;
+  priority: "高" | "中" | "低";
+}
+
+export const REVIEW_TASKS: ReviewTask[] = [
+  { caseId: "IRB-2026-004", title: "VGH-ONCO-2026 免疫檢查點抑制劑聯合化療治療胃癌之第二期試驗", stage: "行政完整性審查", dueDate: "2026-08-10", priority: "高" },
+  { caseId: "IRB-2026-003", title: "CMUH-DM-2026 新型口服降血糖藥物之第三期多中心隨機雙盲試驗", stage: "完整文件審查", dueDate: "2026-08-14", priority: "中" },
+  { caseId: "IRB-2026-008", title: "逾期補件案件 — 需優先處理", stage: "補件判定", dueDate: "2026-08-09", priority: "高" },
+  { caseId: "IRB-2026-007", title: "三軍總醫院 IRB 副審案件 — 簡易審查中", stage: "決議", dueDate: "2026-08-12", priority: "低" },
+];
+
+export const REVIEW_STAGE_ORDER = ["行政完整性審查", "完整文件審查", "補件判定", "決議"] as const;
+
+// ---- 文件中心 ----
+export interface DocRecord {
+  name: string;
+  caseId: string;
+  version: string;
+  uploader: string;
+  date: string;
+  type: string;
+}
+
+export const DOCUMENTS: DocRecord[] = [
+  { name: "計畫書 Protocol v3.2", caseId: "IRB-2026-003", version: "v3.2", uploader: "陳怡君（廠商）", date: "2026-08-01", type: "計畫書" },
+  { name: "受試者同意書 ICF v2.1", caseId: "IRB-2026-004", version: "v2.1", uploader: "陳怡君（廠商）", date: "2026-08-05", type: "同意書" },
+  { name: "藥品資料表 IB v1.4", caseId: "IRB-2026-001", version: "v1.4", uploader: "陳怡君（廠商）", date: "2026-07-22", type: "藥品資料表" },
+  { name: "主審核准函", caseId: "IRB-2026-007", version: "v1.0", uploader: "王建國（主審IRB）", date: "2026-08-06", type: "核准函" },
+  { name: "補件回覆文件", caseId: "IRB-2026-008", version: "v1.1", uploader: "陳怡君（廠商）", date: "2026-08-03", type: "補件文件" },
+];
+
+// ---- 通訊中心 / 通知稽催模組 ----
+export interface NotificationRecord {
+  id: string;
+  type: "補件通知" | "審查完成" | "逾期提醒" | "核准通知" | "爭議協調";
+  caseId: string;
+  target: string;
+  channel: "電子郵件" | "系統內" | "電子郵件 + 系統內";
+  time: string;
+  read: boolean;
+}
+
+export const NOTIFICATION_RECORDS: NotificationRecord[] = [
+  { id: "N-1042", type: "逾期提醒", caseId: "IRB-2026-008", target: "高雄醫學大學附設醫院", channel: "電子郵件 + 系統內", time: "10 分鐘前", read: false },
+  { id: "N-1041", type: "補件通知", caseId: "IRB-2026-004", target: "臺北榮民總醫院", channel: "系統內", time: "1 小時前", read: false },
+  { id: "N-1040", type: "審查完成", caseId: "IRB-2026-007", target: "三軍總醫院", channel: "電子郵件 + 系統內", time: "3 小時前", read: true },
+  { id: "N-1039", type: "核准通知", caseId: "IRB-2026-001", target: "國立臺灣大學醫學院附設醫院", channel: "電子郵件 + 系統內", time: "昨天", read: true },
+  { id: "N-1038", type: "爭議協調", caseId: "IRB-2026-003", target: "中國醫藥大學附設醫院", channel: "系統內", time: "2 天前", read: true },
+];
+
+// ---- 流程追蹤（單一案件全生命週期時間軸）----
+export const TRACKING_CASE = {
+  id: "IRB-2026-004",
+  title: "VGH-ONCO-2026 免疫檢查點抑制劑聯合化療治療胃癌之第二期試驗",
+  timeline: [
+    { state: "draft", date: "2026-07-10", actor: "廠商", note: "廠商登錄新案" },
+    { state: "submitted", date: "2026-07-12", actor: "廠商", note: "完成送件" },
+    { state: "assigning", date: "2026-07-12", actor: "系統", note: "13:30 梯次完成輪序指派" },
+    { state: "assigned", date: "2026-07-12", actor: "主審IRB", note: "臺北榮民總醫院 IRB 已指派" },
+    { state: "reviewing", date: "2026-07-13", actor: "主審IRB", note: "審查計時開始" },
+    { state: "revision", date: "2026-07-25", actor: "主審IRB", note: "發出補件通知，暫停計時" },
+  ],
+  current: "revision",
+};
+

@@ -103,3 +103,39 @@ export function InfoBanner({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
+const INTEGRATION_STATUS_STYLE: Record<string, { label: string; color: string }> = {
+  connected: { label: "已連線", color: "#22c55e" },
+  syncing: { label: "同步中", color: "#eab308" },
+  offline: { label: "離線", color: "#ef4444" },
+};
+
+export function IntegrationStatusPill({ status }: { status: string }) {
+  const s = INTEGRATION_STATUS_STYLE[status] ?? INTEGRATION_STATUS_STYLE.connected;
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
+      style={{ backgroundColor: `${s.color}1a`, color: s.color }}
+    >
+      <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: s.color }} />
+      {s.label}
+    </span>
+  );
+}
+
+export function PriorityBadge({ priority }: { priority: string }) {
+  const map: Record<string, string> = { 高: "#ef4444", 中: "#f59e0b", 低: "#64748b" };
+  const color = map[priority] ?? "#64748b";
+  return (
+    <span
+      className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium"
+      style={{ backgroundColor: `${color}1a`, color }}
+    >
+      {priority}
+    </span>
+  );
+}
+
+export function EmptyState({ label }: { label: string }) {
+  return <div className="py-10 text-center text-sm text-slate-400">{label}</div>;
+}
