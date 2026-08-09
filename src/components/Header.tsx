@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Bell, RefreshCw, ChevronDown } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { Bell, RefreshCw, ChevronDown, Home } from "lucide-react";
 import { useRole } from "../context/RoleContext";
 import { ROLES, roleByKey, NOTIFICATIONS_COUNT } from "../data/model";
 
@@ -13,6 +13,15 @@ export default function Header({ title }: { title: string }) {
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6">
       <div className="flex items-center gap-3">
+        <Link
+          to="/"
+          className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+          title="回首頁"
+        >
+          <Home size={15} />
+          回首頁
+        </Link>
+        <span className="h-5 w-px bg-slate-200" />
         <span className="text-base font-semibold text-slate-800">
           TFDA IRB 多中心審查暨送審平台
         </span>

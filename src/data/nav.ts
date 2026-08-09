@@ -69,9 +69,13 @@ export const NAV_BY_ROLE: Record<RoleKey, NavItem[]> = {
     dashboard, caseManagement, comms, docCenter, revisionRequests, tracking,
   ],
   cde: [
-    dashboard, caseManagement, cirb, tracking, stats, sysIntegration, comms,
+    dashboard, caseManagement, comms, stats, cirb, tracking, conflict,
+    processControl, docCenter, timeliness, milestones, threeTierLock,
+    techArch, notifyModule,
   ],
   sysadmin: [
-    dashboard, sysIntegration, threeTierLock, techArch, docCenter, notifyModule,
+    dashboard, caseManagement, comms, stats, cirb, tracking, conflict,
+    processControl, docCenter, timeliness, sysIntegration, milestones,
+    threeTierLock, techArch, notifyModule,
   ],
 };

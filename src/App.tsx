@@ -5,6 +5,7 @@ import AppLayout from "./components/AppLayout";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import Cases from "./pages/Cases";
+import CaseDetail from "./pages/CaseDetail";
 import Comms from "./pages/Comms";
 import Stats from "./pages/Stats";
 import CirbIntegration from "./pages/CirbIntegration";
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="cases/:id" element={<CaseDetail />} />
             {ALL_NAV_ITEMS.map((item) => {
               const Page = BUILT_PAGES[item.key];
               const relative = item.path.replace("/app/", "");

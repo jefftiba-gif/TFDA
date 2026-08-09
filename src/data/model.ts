@@ -575,3 +575,413 @@ export const TRACKING_CASE = {
   current: "revision",
 };
 
+// ---- 案件詳情 / 審查進度頁 ----
+export interface ReviewStageChip {
+  key: string;
+  label: string;
+  status: "done" | "current" | "pending";
+}
+
+export interface ReviewOpinion {
+  date: string;
+  author: string;
+  content: string;
+}
+
+export interface SecondaryStatusRow {
+  hospital: string;
+  status: string;
+  date: string;
+}
+
+export interface CommEntry {
+  from: string;
+  time: string;
+  text: string;
+}
+
+export interface CaseDetail {
+  cIrbRef: string;
+  phase: string;
+  condition: string;
+  drug: string;
+  piName: string;
+  daysUsed: number;
+  daysTotal: number;
+  stages: ReviewStageChip[];
+  reviewOpinions: ReviewOpinion[];
+  secondaryStatuses: SecondaryStatusRow[];
+  commLog: CommEntry[];
+  internalNotes: CommEntry[];
+}
+
+const STAGE_LABELS = ["案件提交", "主審指派", "主審審查", "補件往返", "主審決議", "副審審查", "全部完成"];
+
+function buildStages(currentIndex: number): ReviewStageChip[] {
+  return STAGE_LABELS.map((label, i) => ({
+    key: label,
+    label,
+    status: i < currentIndex ? "done" : i === currentIndex ? "current" : "pending",
+  }));
+}
+
+export const CASE_DETAILS: Record<string, CaseDetail> = {
+  "IRB-2026-001": {
+    cIrbRef: "CIRB-2026-NTUH-0021",
+    phase: "Phase III",
+    condition: "非小細胞肺癌",
+    drug: "BNT-2026（單株抗體）",
+    piName: "林志明",
+    daysUsed: 20,
+    daysTotal: 20,
+    stages: buildStages(6),
+    reviewOpinions: [
+      { date: "2026-07-15", author: "主審IRB（國立臺灣大學醫學院附設醫院）", content: "計畫書與同意書內容完整，無須補件，同意進入決議程序。" },
+      { date: "2026-07-28", author: "副審IRB（各參與醫院）", content: "全部副審醫院完成簡易審查，均無意見，同意核准。" },
+    ],
+    secondaryStatuses: [
+      { hospital: "臺北榮民總醫院", status: "已核准", date: "2026-07-26" },
+      { hospital: "三軍總醫院", status: "已核准", date: "2026-07-27" },
+      { hospital: "中國醫藥大學附設醫院", status: "已核准", date: "2026-07-28" },
+    ],
+    commLog: [
+      { from: "系統通知", time: "07-29 09:00", text: "案件 IRB-2026-001 已完成全部審查，核准函已發出。" },
+    ],
+    internalNotes: [
+      { from: "王建國（主審IRB）", time: "07-15 10:20", text: "本案計畫設計嚴謹，建議加速處理。" },
+    ],
+  },
+  "IRB-2026-003": {
+    cIrbRef: "CIRB-2026-CGMH-0067",
+    phase: "Phase III",
+    condition: "第二型糖尿病",
+    drug: "CMUH-DM-2026（GLP-1 receptor agonist）",
+    piName: "陳志明",
+    daysUsed: 8,
+    daysTotal: 20,
+    stages: buildStages(2),
+    reviewOpinions: [
+      { date: "2026-08-03", author: "主審IRB（中國醫藥大學附設醫院）", content: "統計方法說明尚待補充，其餘資料齊備，審查中。" },
+    ],
+    secondaryStatuses: [
+      { hospital: "彰化基督教醫院", status: "尚未開始", date: "—" },
+      { hospital: "奇美醫院", status: "尚未開始", date: "—" },
+      { hospital: "花蓮慈濟醫院", status: "尚未開始", date: "—" },
+    ],
+    commLog: [
+      { from: "陳怡君（廠商）", time: "08-05 14:20", text: "已收到審查意見，將於本週內補充統計方法說明。" },
+      { from: "王建國（主審IRB）", time: "08-06 09:10", text: "收到，將於複審時一併確認。" },
+    ],
+    internalNotes: [],
+  },
+  "IRB-2026-004": {
+    cIrbRef: "CIRB-2026-VGH-0134",
+    phase: "Phase II",
+    condition: "胃癌",
+    drug: "VGH-ONCO-2026（免疫檢查點抑制劑＋化療）",
+    piName: "張美惠",
+    daysUsed: 13,
+    daysTotal: 20,
+    stages: buildStages(3),
+    reviewOpinions: [
+      { date: "2026-07-25", author: "主審IRB（臺北榮民總醫院）", content: "受試者同意書風險揭露段落需補充，已發出補件通知，暫停計時。" },
+    ],
+    secondaryStatuses: [],
+    commLog: [
+      { from: "系統通知", time: "07-25 16:40", text: "案件 IRB-2026-004 狀態更新為「補件中」。" },
+    ],
+    internalNotes: [
+      { from: "王建國（主審IRB）", time: "07-25 16:35", text: "風險段落引用舊版模板，請廠商依最新格式補正。" },
+    ],
+  },
+  "IRB-2026-007": {
+    cIrbRef: "CIRB-2026-TSGH-0089",
+    phase: "Phase II",
+    condition: "多中心副審案件",
+    drug: "—",
+    piName: "—",
+    daysUsed: 6,
+    daysTotal: 10,
+    stages: buildStages(5),
+    reviewOpinions: [
+      { date: "2026-08-04", author: "副審IRB（三軍總醫院）", content: "簡易審查中，本院受試者同意書及行政倫理事項確認中。" },
+    ],
+    secondaryStatuses: [{ hospital: "三軍總醫院", status: "簡易審查中", date: "2026-08-04" }],
+    commLog: [
+      { from: "王建國（主審IRB）", time: "08-02 11:00", text: "主審已完成，通知副審開始審查。" },
+    ],
+    internalNotes: [],
+  },
+  "IRB-2026-008": {
+    cIrbRef: "CIRB-2026-KMUH-0055",
+    phase: "Phase III",
+    condition: "逾期補件案件",
+    drug: "—",
+    piName: "—",
+    daysUsed: 22,
+    daysTotal: 20,
+    stages: buildStages(3),
+    reviewOpinions: [
+      { date: "2026-07-28", author: "主審IRB（高雄醫學大學附設醫院）", content: "受試者同意書風險揭露說明需修正，已逾期未回覆，請廠商儘速補件。" },
+    ],
+    secondaryStatuses: [],
+    commLog: [
+      { from: "系統通知", time: "今天 08:00", text: "案件 IRB-2026-008 補件已逾期 2 天，已發出稽催通知。" },
+    ],
+    internalNotes: [],
+  },
+};
+
+// ---- §7.6 通知觸發條件 × 儀表板行為對照表 ----
+export interface NotifyTriggerRow {
+  no: number;
+  trigger: string;
+  target: string;
+  content: string;
+  dashboardBehavior: string;
+}
+
+export const NOTIFY_TRIGGER_TABLE: NotifyTriggerRow[] = [
+  { no: 1, trigger: "新案送件（已送件）", target: "系統（指派）＋ TFDA", content: "通知派案", dashboardBehavior: "廠商畫面顯示「送件成功，待指派」" },
+  { no: 2, trigger: "主審指派完成（主審審查中）", target: "主審 IRB 承辦人", content: "新案件待審，20天倒數開始", dashboardBehavior: "主審儀表板「待審佇列」+1，倒數計時器啟動" },
+  { no: 3, trigger: "主審要求補件（補件中）", target: "廠商送審人員", content: "補件通知（含審查意見）", dashboardBehavior: "廠商儀表板置頂「補件倒數」，補件進度條顯示 0%" },
+  { no: 4, trigger: "廠商完成補件（轉回主審審查中）", target: "主審 IRB 承辦人", content: "補件已回覆，請複審", dashboardBehavior: "主審儀表板案件自動回到佇列頂端，標記「補件已回，待複審」橙色標籤" },
+  { no: 5, trigger: "主審完成（主審完成）", target: "副審 IRB 承辦人 + 廠商", content: "主審結果公告，請副審啟動", dashboardBehavior: "副審儀表板新增「待啟動」案件，廠商儀表板顯示「主審完成」" },
+  { no: 6, trigger: "副審簡審轉一般審查（副審一般審查中）", target: "TFDA 管理員 + 廠商", content: "副審 IRB 由簡審轉一般審查（提會審查），請注意時程", dashboardBehavior: "副審儀表板顯示「簡審不通過，需轉一般審查」提醒標籤，TFDA 時效監控更新" },
+  { no: 7, trigger: "副審完成（已核准）", target: "廠商 + TFDA", content: "整體審查通過通知", dashboardBehavior: "案件移至雙方「歷史歸檔（History）」區塊，廠商可下載所有核准函" },
+];
+
+export const NOTIFY_TRIGGER_TYPES = [
+  { type: "補件通知", desc: "主審或副審發出補件意見時觸發，同步暫停該案審查計時。", channel: "電子郵件 + 系統內" },
+  { type: "審查完成", desc: "主審或副審完成決議並登錄結果時觸發。", channel: "電子郵件 + 系統內" },
+  { type: "逾期提醒", desc: "案件超過時效期限（20/15/10 工作天）仍未完成時，每日稽催。", channel: "電子郵件 + 系統內" },
+  { type: "核准通知", desc: "所有 IRB 審查完成、案件結案時發出。", channel: "電子郵件 + 系統內" },
+  { type: "爭議協調", desc: "案件被標記為爭議處理中，通知 TFDA 協調窗口。", channel: "系統內" },
+  { type: "指派通知", desc: "CDE 依輪序完成主審 IRB 指派時，通知該院承辦人。", channel: "系統內" },
+];
+
+// ---- 文件中心：文件夾 / 版本 / 存取日誌 ----
+export interface DocVersion {
+  version: string;
+  date: string;
+  uploader: string;
+  fileName: string;
+  note: string;
+}
+
+export interface DocFile {
+  name: string;
+  caseId: string;
+  folder: "基本文件夾" | "審查文件夾" | "行政文件夾";
+  type: string;
+  latestVersion: string;
+  isNew: boolean;
+  versions: DocVersion[];
+  content: string; // searchable excerpt
+}
+
+export const DOC_FILES: DocFile[] = [
+  {
+    name: "研究計畫書",
+    caseId: "IRB-2026-003",
+    folder: "基本文件夾",
+    type: "計畫書",
+    latestVersion: "v2.0",
+    isNew: true,
+    content: "CMUH-DM-2026 新型口服降血糖藥物之第三期多中心隨機雙盲試驗 第二型糖尿病 統計方法 受試者納入排除條件",
+    versions: [
+      { version: "v2.0", date: "2026-08-01", uploader: "陳怡君（廠商）", fileName: "計畫書_v2.0.pdf", note: "補充統計方法段落" },
+      { version: "v1.1", date: "2026-07-20", uploader: "陳怡君（廠商）", fileName: "計畫書_v1.1.pdf", note: "修正納入排除條件" },
+      { version: "v1.0", date: "2026-07-10", uploader: "陳怡君（廠商）", fileName: "計畫書_v1.0.pdf", note: "初版送審" },
+    ],
+  },
+  {
+    name: "受試者同意書",
+    caseId: "IRB-2026-003",
+    folder: "基本文件夾",
+    type: "同意書",
+    latestVersion: "v1.2",
+    isNew: true,
+    content: "CMUH-DM-2026 受試者同意書 第二型糖尿病 風險揭露 補償與賠償 個人資料保護",
+    versions: [
+      { version: "v1.2", date: "2026-08-01", uploader: "陳怡君（廠商）", fileName: "同意書_v1.2.pdf", note: "更新補償與賠償條款" },
+      { version: "v1.0", date: "2026-07-10", uploader: "陳怡君（廠商）", fileName: "同意書_v1.0.pdf", note: "初版送審" },
+    ],
+  },
+  {
+    name: "藥品資料表 IB",
+    caseId: "IRB-2026-001",
+    folder: "基本文件夾",
+    type: "藥品資料表",
+    latestVersion: "v1.4",
+    isNew: false,
+    content: "BNT-2026 單株抗體 藥品資料表 Investigator's Brochure 藥動藥效",
+    versions: [
+      { version: "v1.4", date: "2026-07-22", uploader: "陳怡君（廠商）", fileName: "IB_v1.4.pdf", note: "更新藥動藥效資料" },
+    ],
+  },
+  {
+    name: "主審審查意見表",
+    caseId: "IRB-2026-004",
+    folder: "審查文件夾",
+    type: "審查意見",
+    latestVersion: "v1.0",
+    isNew: true,
+    content: "VGH-ONCO-2026 主審審查意見 受試者同意書風險揭露 補件要求",
+    versions: [
+      { version: "v1.0", date: "2026-07-25", uploader: "王建國（主審IRB）", fileName: "審查意見_v1.0.pdf", note: "發出補件要求" },
+    ],
+  },
+  {
+    name: "主審核准函",
+    caseId: "IRB-2026-007",
+    folder: "審查文件夾",
+    type: "核准函",
+    latestVersion: "v1.0",
+    isNew: true,
+    content: "三軍總醫院 主審核准函 副審審查通知",
+    versions: [
+      { version: "v1.0", date: "2026-08-06", uploader: "王建國（主審IRB）", fileName: "核准函_v1.0.pdf", note: "主審完成，通知副審" },
+    ],
+  },
+  {
+    name: "補件回覆文件",
+    caseId: "IRB-2026-008",
+    folder: "審查文件夾",
+    type: "補件文件",
+    latestVersion: "v1.1",
+    isNew: false,
+    content: "高雄醫學大學附設醫院 補件回覆 受試者同意書修正",
+    versions: [
+      { version: "v1.1", date: "2026-08-03", uploader: "陳怡君（廠商）", fileName: "補件回覆_v1.1.pdf", note: "尚未完成回覆" },
+    ],
+  },
+  {
+    name: "試驗醫院清單",
+    caseId: "IRB-2026-003",
+    folder: "行政文件夾",
+    type: "行政文件",
+    latestVersion: "v1.0",
+    isNew: false,
+    content: "多中心試驗醫院清單 主審副審分工",
+    versions: [
+      { version: "v1.0", date: "2026-07-10", uploader: "陳怡君（廠商）", fileName: "醫院清單_v1.0.pdf", note: "初版" },
+    ],
+  },
+  {
+    name: "利益衝突揭露表",
+    caseId: "IRB-2026-004",
+    folder: "行政文件夾",
+    type: "行政文件",
+    latestVersion: "v1.0",
+    isNew: false,
+    content: "臺北榮民總醫院 利益衝突揭露 研究者聲明",
+    versions: [
+      { version: "v1.0", date: "2026-07-12", uploader: "陳怡君（廠商）", fileName: "利益衝突揭露_v1.0.pdf", note: "初版" },
+    ],
+  },
+];
+
+export const DOC_ACCESS_LOG = [
+  { user: "陳怡君（廠商）", action: "上傳", doc: "研究計畫書 v2.0", time: "08-01 10:12" },
+  { user: "王建國（主審IRB）", action: "下載", doc: "研究計畫書 v2.0", time: "08-01 14:30" },
+  { user: "黃國棟（TFDA管理員）", action: "檢視", doc: "受試者同意書 v1.2", time: "08-02 09:05" },
+  { user: "李美玲（副審IRB）", action: "下載", doc: "主審核准函 v1.0", time: "08-06 11:20" },
+  { user: "陳怡君（廠商）", action: "上傳", doc: "補件回覆文件 v1.1", time: "08-03 16:45" },
+];
+
+// ---- 關鍵時程總表（完整送審生命週期，0–15）----
+export interface FullMilestoneStep {
+  no: number;
+  label: string;
+  phase: string;
+  phaseColor: string;
+  owner: string;
+  duration: string;
+  system: string;
+}
+
+export const FULL_MILESTONE_STEPS: FullMilestoneStep[] = [
+  { no: 0, label: "送件前諮詢（可選）", phase: "送件前準備", phaseColor: "#9ca3af", owner: "CDE", duration: "4–12 週", system: "CDE 諮詢系統" },
+  { no: 1, label: "TFDA 臨床試驗送件", phase: "ExPRESS 平台", phaseColor: "#3b82f6", owner: "廠商", duration: "—", system: "ExPRESS" },
+  { no: 2, label: "TFDA 科學審查", phase: "ExPRESS 平台", phaseColor: "#3b82f6", owner: "TFDA／CDE", duration: "15／45 天", system: "ExPRESS" },
+  { no: 3, label: "TFDA 補件", phase: "ExPRESS 平台", phaseColor: "#3b82f6", owner: "廠商", duration: "2 個月 + 1 個月", system: "ExPRESS" },
+  { no: 4, label: "c-IRB 系統登錄", phase: "c-IRB 系統", phaseColor: "#14b8a6", owner: "廠商", duration: "—", system: "c-IRB 系統" },
+  { no: 5, label: "系統指派主審 IRB", phase: "c-IRB 系統", phaseColor: "#14b8a6", owner: "系統自動", duration: "每日 4 梯次", system: "c-IRB 系統" },
+  { no: 6, label: "廠商送件至主審 IRB", phase: "主審 IRB", phaseColor: "#1e293b", owner: "廠商", duration: "—", system: "直接送件" },
+  { no: 7, label: "主審 IRB 行政審查", phase: "主審 IRB", phaseColor: "#1e293b", owner: "主審 IRB", duration: "視資料完整性", system: "各醫院 IRB" },
+  { no: 8, label: "主審 IRB 實質審查", phase: "主審 IRB", phaseColor: "#1e293b", owner: "主審 IRB", duration: "20／15 工作天", system: "各醫院 IRB" },
+  { no: 9, label: "主審 IRB 補件往返", phase: "主審 IRB", phaseColor: "#1e293b", owner: "廠商＋主審", duration: "審查時間暫停", system: "各醫院 IRB" },
+  { no: 10, label: "主審 IRB 決議", phase: "主審 IRB", phaseColor: "#1e293b", owner: "主審 IRB", duration: "—", system: "各醫院 IRB" },
+  { no: 11, label: "副審 IRB 審查（簡易／一般）", phase: "副審 IRB", phaseColor: "#7c3aed", owner: "副審 IRB", duration: "10 工作天", system: "各醫院 IRB" },
+  { no: 12, label: "副審 IRB 補件往返（如需要）", phase: "副審 IRB", phaseColor: "#7c3aed", owner: "廠商＋副審", duration: "包含於 10 工作天內", system: "各醫院 IRB" },
+  { no: 13, label: "全部審查完成", phase: "核准", phaseColor: "#16a34a", owner: "系統", duration: "—", system: "c-IRB 系統" },
+  { no: 14, label: "核准函發出／結案", phase: "核准", phaseColor: "#16a34a", owner: "TFDA／系統", duration: "—", system: "c-IRB 系統" },
+  { no: 15, label: "試驗開始執行（ENO）", phase: "試驗開始", phaseColor: "#0f766e", owner: "廠商", duration: "—", system: "—" },
+];
+
+export const MILESTONE_LEGEND = [
+  { label: "送件前準備", color: "#9ca3af" },
+  { label: "ExPRESS 平台", color: "#3b82f6" },
+  { label: "c-IRB 系統", color: "#14b8a6" },
+  { label: "主審 IRB", color: "#1e293b" },
+  { label: "副審 IRB", color: "#7c3aed" },
+  { label: "核准", color: "#16a34a" },
+  { label: "試驗開始", color: "#0f766e" },
+];
+
+// ---- 平台定位對比（依提案書 §3.1）----
+export const PLATFORM_POSITIONING = [
+  { title: "IRB 多中心送審與案件管理平台", desc: "以單一案件識別、集中進度追蹤為核心，取代分散的送審與追蹤方式。", fit: "高" },
+  { title: "主審與副審醫院協作平台", desc: "支援主審／副審醫院間之文件及審查資訊交換，降低重複作業。", fit: "高" },
+  { title: "TFDA 監管與案件追蹤平台", desc: "提供 TFDA 掌握整體案件進度、逾期情形及處理歷程之能力。", fit: "高" },
+  { title: "既有系統間之案件及文件交換平台", desc: "與 TFDA ExPRESS、CDE c-IRB、醫院 IRB 系統進行資料與文件交換。", fit: "中" },
+  { title: "未來跨機關臨床試驗服務入口", desc: "保留未來與其他主管機關、跨機構服務整合之擴充彈性。", fit: "規劃中" },
+];
+
+// ---- 統計報表：醫院效能明細 ----
+export interface HospitalStat {
+  hospital: string;
+  region: string;
+  cases: number;
+  avgDays: number;
+  onTimeRate: number;
+  approvalRate: number;
+  reviewMode: string;
+}
+
+export const HOSPITAL_STATS: HospitalStat[] = [
+  { hospital: "三軍總醫院", region: "北部・台北", cases: 18, avgDays: 7.2, onTimeRate: 94, approvalRate: 96, reviewMode: "簡審為主" },
+  { hospital: "林口長庚紀念醫院", region: "北部・桃園", cases: 16, avgDays: 7.8, onTimeRate: 88, approvalRate: 91, reviewMode: "簡審" },
+  { hospital: "馬偕紀念醫院", region: "北部・台北", cases: 15, avgDays: 8.1, onTimeRate: 87, approvalRate: 93, reviewMode: "簡審" },
+  { hospital: "亞東紀念醫院", region: "北部・新北", cases: 14, avgDays: 7.1, onTimeRate: 93, approvalRate: 95, reviewMode: "簡審" },
+  { hospital: "臺北榮民總醫院（副審）", region: "北部・台北", cases: 13, avgDays: 7.3, onTimeRate: 92, approvalRate: 94, reviewMode: "簡審" },
+  { hospital: "彰化基督教醫院", region: "中部・彰化", cases: 12, avgDays: 7.8, onTimeRate: 92, approvalRate: 92, reviewMode: "簡審" },
+  { hospital: "新光吳火獅紀念醫院", region: "北部・台北", cases: 11, avgDays: 7.5, onTimeRate: 91, approvalRate: 91, reviewMode: "簡審" },
+  { hospital: "高雄長庚紀念醫院", region: "南部・高雄", cases: 11, avgDays: 7.6, onTimeRate: 91, approvalRate: 93, reviewMode: "簡審" },
+  { hospital: "國泰綜合醫院", region: "北部・台北", cases: 10, avgDays: 8.3, onTimeRate: 85, approvalRate: 90, reviewMode: "簡審" },
+  { hospital: "台北市立聯合醫院", region: "北部・台北", cases: 9, avgDays: 8.8, onTimeRate: 78, approvalRate: 89, reviewMode: "簡審" },
+  { hospital: "奇美醫院", region: "南部・台南", cases: 9, avgDays: 8.0, onTimeRate: 89, approvalRate: 92, reviewMode: "簡審" },
+  { hospital: "花蓮慈濟醫院", region: "東部・花蓮", cases: 8, avgDays: 9.2, onTimeRate: 75, approvalRate: 88, reviewMode: "混合" },
+  { hospital: "台中榮民總醫院（副審）", region: "中部・台中", cases: 7, avgDays: 6.9, onTimeRate: 96, approvalRate: 97, reviewMode: "簡審" },
+  { hospital: "中山醫學大學附設醫院", region: "中部・台中", cases: 6, avgDays: 8.5, onTimeRate: 83, approvalRate: 89, reviewMode: "簡審" },
+  { hospital: "嘉義基督教醫院", region: "南部・嘉義", cases: 5, avgDays: 9.5, onTimeRate: 72, approvalRate: 86, reviewMode: "混合" },
+];
+
+// ---- 統計報表：月度趨勢（提交／核准／退件）----
+export const MONTHLY_TREND = [
+  { month: "01月", submitted: 3, approved: 2, rejected: 0 },
+  { month: "02月", submitted: 4, approved: 2, rejected: 1 },
+  { month: "03月", submitted: 5, approved: 3, rejected: 0 },
+  { month: "04月", submitted: 6, approved: 4, rejected: 1 },
+  { month: "05月", submitted: 4, approved: 3, rejected: 0 },
+  { month: "06月", submitted: 3, approved: 1, rejected: 0 },
+];
+
+export const STATS_SUMMARY = {
+  totalCases: 10,
+  approvalRate: 75.0,
+  avgDays: 14.2,
+  onTimeRate: 88.0,
+};
+

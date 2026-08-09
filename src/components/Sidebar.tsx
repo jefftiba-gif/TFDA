@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { Shield } from "lucide-react";
 import { useRole } from "../context/RoleContext";
 import { roleByKey } from "../data/model";
@@ -11,7 +11,7 @@ export default function Sidebar() {
 
   return (
     <aside className="flex h-full w-60 shrink-0 flex-col bg-[#0b1526] text-slate-300">
-      <div className="flex items-center gap-2 border-b border-white/10 px-4 py-4">
+      <Link to="/" className="flex items-center gap-2 border-b border-white/10 px-4 py-4 hover:bg-white/5">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white">
           <Shield size={18} />
         </div>
@@ -19,7 +19,7 @@ export default function Sidebar() {
           <div className="text-sm font-semibold text-white">TFDA IRB</div>
           <div className="text-[11px] text-slate-400">多中心審查暨送審平台</div>
         </div>
-      </div>
+      </Link>
 
       <div className="mx-3 mt-3 mb-1 flex items-center gap-3 rounded-lg bg-white/5 px-3 py-3">
         <div

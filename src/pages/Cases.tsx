@@ -1,11 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import { PageHeader, Card, StatusBadge } from "../components/ui";
 import { MOCK_CASES } from "../data/model";
 import { ChevronRight } from "lucide-react";
 
 export default function Cases() {
+  const navigate = useNavigate();
   return (
     <div>
-      <PageHeader title="案件管理" subtitle="所有送審案件之集中查詢與管理" />
+      <PageHeader title="案件管理" subtitle="所有送審案件之集中查詢與管理（點擊案件查看審查進度詳情）" />
       <Card className="!p-0 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead>
@@ -20,7 +22,11 @@ export default function Cases() {
           </thead>
           <tbody>
             {MOCK_CASES.map((c) => (
-              <tr key={c.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
+              <tr
+                key={c.id}
+                onClick={() => navigate(`/app/cases/${c.id}`)}
+                className="cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50"
+              >
                 <td className="px-5 py-4 font-mono text-xs text-slate-500">{c.id}</td>
                 <td className="max-w-md truncate px-5 py-4 font-medium text-slate-800">{c.title}</td>
                 <td className="px-5 py-4 text-slate-500">{c.hospital}</td>
