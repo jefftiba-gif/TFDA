@@ -25,7 +25,6 @@ import SimpleReviewChecklist from "./pages/SimpleReviewChecklist";
 import ConsentChecklist from "./pages/ConsentChecklist";
 import ReviewWorkstation from "./pages/ReviewWorkstation";
 import Placeholder from "./pages/Placeholder";
-import HisSimulation from "./pages/HisSimulation";
 import { NAV_BY_ROLE } from "./data/nav";
 
 // Collect every distinct nav path across all roles so each has a route,
@@ -67,7 +66,6 @@ export default function App() {
       <RoleProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/his-sim" element={<HisSimulation />} />
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="cases/:id" element={<CaseDetail />} />

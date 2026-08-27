@@ -1,5 +1,5 @@
-import { useNavigate, Link } from "react-router-dom";
-import { Shield, FileText, CheckCircle2, Globe, Activity, Lock, Zap, Pill, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Shield, FileText, CheckCircle2, Globe, Activity, Lock, Zap } from "lucide-react";
 import { useRole } from "../context/RoleContext";
 import { ROLES, PLATFORM_STATS } from "../data/model";
 
@@ -73,28 +73,6 @@ export default function Landing() {
             );
           })}
         </div>
-      </div>
-
-      <div className="mx-auto max-w-4xl px-6 pb-10">
-        <Link
-          to="/his-sim"
-          className="group flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-gradient-to-r from-[#0E6B63]/20 to-white/[0.03] px-6 py-5 transition-colors hover:border-[#2dd4bf]/40"
-        >
-          <div className="flex items-center gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0E6B63] text-white">
-              <Pill size={20} />
-            </div>
-            <div>
-              <div className="font-medium text-white">
-                延伸展示：HIS／CDSS 智慧臨床決策支援系統 — 互動模擬
-              </div>
-              <div className="mt-1 text-[12px] leading-snug text-slate-400">
-                模擬醫師於 HIS 開立處方、觸發藥品交互作用檢核，依風險分級進行 Hard Stop／Soft Stop 分流處置
-              </div>
-            </div>
-          </div>
-          <ArrowRight size={18} className="shrink-0 text-slate-400 transition-transform group-hover:translate-x-1 group-hover:text-[#2dd4bf]" />
-        </Link>
       </div>
 
       <div className="mx-auto max-w-6xl px-6 pb-16">
