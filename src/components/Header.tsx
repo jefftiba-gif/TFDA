@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Bell, RefreshCw, ChevronDown, Home } from "lucide-react";
+import { Bell, RefreshCw, ChevronDown, Home, Pill } from "lucide-react";
 import { useRole } from "../context/RoleContext";
 import { ROLES, roleByKey, NOTIFICATIONS_COUNT } from "../data/model";
 
@@ -31,6 +31,14 @@ export default function Header({ title }: { title: string }) {
       </div>
 
       <div className="flex items-center gap-4">
+        <Link
+          to="/his-sim"
+          className="flex items-center gap-1.5 rounded-lg border border-[#0E6B63]/30 bg-[#0E6B63]/5 px-3 py-1.5 text-sm text-[#0E6B63] hover:bg-[#0E6B63]/10"
+          title="HIS／CDSS 互動模擬"
+        >
+          <Pill size={14} />
+          HIS／CDSS 模擬
+        </Link>
         <div className="relative">
           <button
             onClick={() => setOpen((v) => !v)}
